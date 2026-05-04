@@ -1,22 +1,21 @@
 import os
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ✅ FIX 1 — Secret key from environment variable
-SECRET_KEY ="django-insecure-6qmu2ka2^nnauvg!h+e5r0zfbkf51qs$hsk0r%v8khsn(*3++5"
+SECRET_KEY = os.getenv(
+    "SECRET_KEY",
+    "django-insecure-6qmu2ka2^nnauvg!h+e5r0zfbkf51qs$hsk0r%v8khsn(*3++5"
+)
 
-# ✅ FIX 2 — Debug must be False in production
 DEBUG = False
 
-# ✅ FIX 3 — Allow Railway domain
 ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '.railway.app',        # ← allows all railway subdomains
-    '.up.railway.app',     # ← Railway's newer domain format
-    '*',                   # For testing/CloudFront if needed
+    ".up.railway.app",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.up.railway.app",
 ]
 
 INSTALLED_APPS = [
@@ -26,13 +25,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'tracker_app', # App for the views
+    'tracker_app',
 ]
 
-# ✅ FIX 4 — Whitenoise for static files
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # ← add this second
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -61,7 +59,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# ✅ FIX 6 — Database (keep sqlite for now, fine for testing)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -74,9 +71,18 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# ✅ FIX 5 — Static files
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# HTTPS ONLY SETTINGS
+SECURE_SSL_REDIRECT = True              # redirect HTTP → HTTPS
+SESSION_COOKIE_SECURE = True            # cookies only over HTTPS
+CSRF_COOKIE_SECURE = True               # CSRF cookie only HTTPS
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_HSTS_SECONDS = 31536000          # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
