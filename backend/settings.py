@@ -11,11 +11,11 @@ SECRET_KEY = os.getenv(
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    ".up.railway.app",
+      "web-production-8ff76.up.railway.app",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://*.up.railway.app",
+    "https://web-production-8ff76.up.railway.app",
 ]
 
 INSTALLED_APPS = [
