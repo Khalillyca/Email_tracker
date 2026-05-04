@@ -1,0 +1,7 @@
+django
+djangorestframework
+requests
+msal
+waitress
+gunicorn
+whitenoise
